@@ -232,3 +232,6 @@ more log context) would help — rather than guessing.
 - Model output is parsed defensively and validated against a strict schema
   before being rendered; malformed output falls back to a safe
   "Inconclusive / Low confidence" result instead of being trusted.
+
+
+  ## This project was supervised by https://github.com/SDAIAAcademy
