@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مِرصاد — محقّق الأمن السيبراني الذكي</title>
+<meta name="description" content="مِرصاد: منصّة تحقيق أمني بالذكاء الاصطناعي لتحليل الرسائل الاحتيالية، الروابط، الملفات، ولقطات الشاشة." />
+<link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" class="logo-svg">
+        <circle class="radar-ring r1" cx="32" cy="32" r="26"></circle>
+        <circle class="radar-ring r2" cx="32" cy="32" r="26"></circle>
+        <path class="shield" d="M32 6 L54 14 V30 C54 44 44 54 32 59 C20 54 10 44 10 30 V14 Z" />
+        <circle class="eye-outer" cx="32" cy="30" r="9" />
+        <circle class="eye-pupil" cx="32" cy="30" r="3.4" />
+      </svg>
+    </span>
+    <div class="brand-text">
+      <span class="brand-name">مِرصاد</span>
+      <span class="brand-tagline" data-i18n="tagline">بعين مِرصاد، للمحتالين بالمرصاد</span>
+    </div>
+  </div>
+
+  <nav class="topbar-actions">
+    <button id="lang-toggle" class="pill-btn" type="button" aria-label="Switch language">
+      <span data-i18n="lang_toggle_label">EN</span>
+    </button>
+    <button id="theme-toggle" class="pill-btn icon-btn" type="button" aria-label="Toggle theme">
+      <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main class="shell">
+
+  <section class="hero">
+    <h1 data-i18n="hero_title">تحقيق أمني فوري، مبني على الأدلة</h1>
+    <p class="hero-sub" data-i18n="hero_sub">
+      ارفع بريدًا احتياليًا، رابطًا مشبوهًا، ملف سجلّات SIEM، أو لقطة شاشة — ويتولى مِرصاد تحليلها كمحقق أمني بمستوى L2/L3: ماذا حدث، ما مدى خطورته، وما الخطوة التالية.
+    </p>
+  </section>
+
+  <section class="input-card" id="input-card">
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload evidence files">
+      <svg viewBox="0 0 24 24" width="30" height="30" class="dz-icon"><path d="M12 3v12m0-12 5 5m-5-5-5 5M5 19h14"/></svg>
+      <p class="dz-text" data-i18n="dz_text">اسحب الملفات هنا أو اضغط للاختيار</p>
+      <p class="dz-hint" data-i18n="dz_hint">PDF · صور/لقطات شاشة · TXT/LOG/CSV/EML — حتى 10MB لكل ملف</p>
+      <input id="file-input" type="file" multiple hidden
+             accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.txt,.log,.csv,.json,.eml" />
+    </div>
+    <div id="file-list" class="file-list" aria-live="polite"></div>
+
+    <div class="or-divider"><span data-i18n="or_divider">أو</span></div>
+
+    <textarea id="text-input" class="text-input" rows="6"
+      data-i18n-placeholder="text_placeholder"
+      placeholder="ألصق نص البريد الإلكتروني، سطور السجلّات، أو أي دليل نصّي هنا..."></textarea>
+
+    <input id="url-input" class="url-input" type="text"
+      data-i18n-placeholder="url_placeholder"
+      placeholder="أو أدخل رابطًا مشبوهًا للتحقيق فيه (اختياري)" />
+
+    <div class="input-footer">
+      <p class="untrusted-note" data-i18n="untrusted_note">
+        كل ما يتم رفعه يُعامل كدليل غير موثوق للتحليل فقط، ولا يُنفَّذ أي ملف على الإطلاق.
+      </p>
+      <button id="submit-btn" class="primary-btn" type="button">
+        <span data-i18n="submit_btn">ابدأ التحقيق</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="scan-state" id="scan-state" hidden>
+    <div class="scan-radar">
+      <svg viewBox="0 0 120 120">
+        <circle class="scan-ring" cx="60" cy="60" r="46"></circle>
+        <circle class="scan-ring delay1" cx="60" cy="60" r="46"></circle>
+        <circle class="scan-ring delay2" cx="60" cy="60" r="46"></circle>
+        <circle class="scan-core" cx="60" cy="60" r="8"></circle>
+      </svg>
+    </div>
+    <p class="scan-text" data-i18n="scan_text">جارٍ فحص الأدلة وبناء التحقيق…</p>
+  </section>
+
+  <section class="error-banner" id="error-banner" hidden></section>
+
+  <section class="dashboard" id="dashboard" hidden>
+
+    <div class="dash-header">
+      <div class="verdict-row">
+        <span id="verdict-badge" class="badge verdict"></span>
+        <span id="severity-badge" class="badge severity"></span>
+        <span id="confidence-badge" class="badge confidence"></span>
+      </div>
+      <button id="export-btn" class="ghost-btn" type="button">
+        <span data-i18n="export_btn">تصدير التقرير</span>
+      </button>
+    </div>
+
+    <p id="case-summary" class="case-summary"></p>
+    <div id="model-warning" class="model-warning" hidden></div>
+
+    <div class="dash-grid">
+      <article class="dash-card" id="card-confirmed">
+        <h3 data-i18n="h_confirmed">الأدلة المؤكدة</h3>
+        <ul class="list" id="list-confirmed"></ul>
+      </article>
+
+      <article class="dash-card" id="card-events">
+        <h3 data-i18n="h_events">الأحداث المشبوهة</h3>
+        <ul class="list" id="list-events"></ul>
+      </article>
+
+      <article class="dash-card" id="card-iocs">
+        <h3 data-i18n="h_iocs">مؤشرات الاختراق (IOCs)</h3>
+        <div class="ioc-table-wrap">
+          <table class="ioc-table" id="ioc-table">
+            <thead><tr>
+              <th data-i18n="ioc_type">النوع</th>
+              <th data-i18n="ioc_value">القيمة</th>
+              <th data-i18n="ioc_context">السياق</th>
+            </tr></thead>
+            <tbody id="ioc-tbody"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="dash-card" id="card-timeline">
+        <h3 data-i18n="h_timeline">الجدول الزمني</h3>
+        <ol class="timeline" id="timeline-list"></ol>
+      </article>
+
+      <article class="dash-card" id="card-hypotheses">
+        <h3 data-i18n="h_hypotheses">الفرضيات</h3>
+        <ul class="list" id="list-hypotheses"></ul>
+      </article>
+
+      <article class="dash-card" id="card-gaps">
+        <h3 data-i18n="h_gaps">الثغرات في الأدلة</h3>
+        <ul class="list" id="list-gaps"></ul>
+      </article>
+
+      <article class="dash-card" id="card-steps">
+        <h3 data-i18n="h_steps">خطوات التحقيق التالية</h3>
+        <ul class="list" id="list-steps"></ul>
+      </article>
+
+      <article class="dash-card" id="card-recs">
+        <h3 data-i18n="h_recs">التوصيات الدفاعية</h3>
+        <ul class="list" id="list-recs"></ul>
+      </article>
+
+      <article class="dash-card wide" id="card-notes">
+        <h3 data-i18n="h_notes">ملاحظات المحلل</h3>
+        <p id="analyst-notes"></p>
+      </article>
+    </div>
+
+    <button id="new-case-btn" class="ghost-btn new-case-btn" type="button">
+      <span data-i18n="new_case_btn">تحقيق جديد</span>
+    </button>
+  </section>
+
+</main>
+
+<button id="chat-fab" class="chat-fab" type="button" hidden>
+  <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 4h16v12H8l-4 4z"/></svg>
+  <span data-i18n="chat_fab" class="chat-fab-label">اسأل المحقق</span>
+</button>
+
+<aside class="chat-panel" id="chat-panel" hidden>
+  <div class="chat-header">
+    <span data-i18n="chat_title">محادثة مع المحقق</span>
+    <button id="chat-close" class="icon-btn" type="button" aria-label="Close chat">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <form id="chat-form" class="chat-form">
+    <input id="chat-input" type="text" data-i18n-placeholder="chat_placeholder" placeholder="اسأل عن نتائج التحقيق..." autocomplete="off" />
+    <button type="submit" class="chat-send" aria-label="Send">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 12l16-8-6 8 6 8z"/></svg>
+    </button>
+  </form>
+</aside>
+
+<footer class="site-footer">
+  <span data-i18n="footer_note">مِرصاد لا يتخذ أي إجراء تلقائي على أنظمتك — كل النتائج توصيات لدعم القرار الأمني.</span>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
